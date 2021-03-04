@@ -1,3 +1,5 @@
-public class EmptyStackException{
-  
+public class EmptyStackException extends Exception{
+  public EmptyStackException(String message){
+    super(message);
+  }
 }
