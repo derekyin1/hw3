@@ -1,38 +1,77 @@
 import java.util.Stack;
 public class CargoShip{
   private java.util.Stack[] stacks;
+  private java.util.Stack dock;
   private int maxHeight;
   private double maxWeight;
+  private double totalWeight;
 
   public CargoShip(int numStacks, int initMaxHeight, double initMaxWeight){
     if (numStacks > 0 && initMaxHeight > 0 && initMaxWeight > 0){
       stacks = new Stack[numStacks];
+      dock = new Stack();
       for (int i = 0; i < numStacks; i++){
         stacks[i] = new Stack();
       }
       maxHeight = initMaxHeight;
       maxWeight = initMaxWeight;
-    }
-    else throw new IllegalArgumentException();
-  }
-  @SuppressWarnings("unchecked")
-  public void pushCargo(Cargo cargo, int stack) /*throws FullStackException, ShipOverweightException, CargoStrengthException*/{
-    if (cargo != null && stack >= 1 && stack <= stacks.length){
-        stacks[stack-1].push(cargo);
+      totalWeight = 0;
     }
     else throw new IllegalArgumentException();
   }
 
-  public Cargo popCargo(int stack) /*throws EmptyStackException*/{
+
+  @SuppressWarnings("unchecked")
+  public void pushCargo(Cargo cargo, int stack) /*throws FullStackException, ShipOverweightException, CargoStrengthException*/{
+    if (cargo != null && stack == -1){
+      dock.push(cargo);
+      return;
+    }
+    if (cargo != null && stack >= 1 && stack <= stacks.length){
+      if (stacks[stack-1].size() < maxHeight){
+        if (totalWeight + cargo.getWeight() <= maxWeight){
+          if (!stacks[stack-1].isEmpty()){
+            if (cargo.getStrength().intStrength() <= ((Cargo) stacks[stack-1].peek()).getStrength().intStrength()){
+              stacks[stack-1].push(cargo);
+              totalWeight += cargo.getWeight();
+            }
+            else{}
+          }
+          else {
+            stacks[stack-1].push(cargo);
+            totalWeight += cargo.getWeight();
+          }
+        }
+        else{}
+      }
+      else{}
+    }
+    else throw new IllegalArgumentException();
+  }
+
+/*public Cargo popCargo(int stack) throws EmptyStackException{
     if (stack >= 1 && stack <= stacks.length){
       Cargo toReturn = (Cargo) stacks[stack-1].peek();
       stacks[stack-1].pop();
-      /*Cargo popped = stacks[stack-1].pop();
-      return popped;*/
       return toReturn;
     }
     else throw new IllegalArgumentException();
   }
+  */
+
+  public Cargo popCargo(int stack) /* throws EmptyStackException*/{
+    if (stack >= 1 && stack <= stacks.length){
+      if (!stacks[stack-1].isEmpty()){
+        return (Cargo) stacks[stack-1].pop();
+      }
+      else{ return null;
+        /* throw new EmptyStackException("d"); */
+      }
+    }
+    else throw new IllegalArgumentException();
+
+  }
+
 
   public void findAndPrint(String name){
     java.util.Stack[] clone = stacks;
@@ -55,17 +94,79 @@ public class CargoShip{
     }
   }
 
-  public static void main(String[] args) {
-    CargoShip test = new CargoShip(3,1,1);
-    Cargo testCargo2 = new Cargo("test1", 1, CargoStrength.FRAGILE);
-    Cargo testCargo = new Cargo("test", 1, CargoStrength.FRAGILE);
-    Cargo testCargo1 = new Cargo("test", 1, CargoStrength.FRAGILE);
+  public void printShip(){
+    String boatCargo = "";
+    String boatStacks = "\\=";
+    String stackNum = " \\";
+    String bottom = "  \\";
+    for (int i = 1; i <= stacks.length; i++){
+      boatStacks+= "|=====";
+      if (i == stacks.length){
+        bottom += "-----";
+      }
+      else bottom += "------";
+      if (i == 1){
+        stackNum += "   " + i;
+      }
+      else stackNum += "     " + i;
+    }
+    boatStacks+= "|=/";
+    stackNum += "   /";
+    bottom += "/";
 
-    test.pushCargo(testCargo, 1);
-    test.pushCargo(testCargo1, 1);
-    test.pushCargo(testCargo2, 1);
-    //test.findAndPrint("test");
-    test.findAndPrint("test1");
+    String dockCargo = "";
+    java.util.Stack dockClone = dock;
+      while(!dockClone.isEmpty()){
+        dockCargo +="\n";
+        if (((Cargo)dockClone.peek()).getStrength() == CargoStrength.FRAGILE){
+          dockCargo += "         F";
+        }
+        else if (((Cargo)dockClone.peek()).getStrength() == CargoStrength.MODERATE){
+          dockCargo += "         M";
+        }
+        else if (((Cargo)dockClone.peek()).getStrength() == CargoStrength.STURDY){
+          dockCargo += "         S";
+        }
+        dockClone.pop();
+      }
+    String theDock = "Dock: |=====|\n      |=====|\n      |=====|\n";
+    String weightDisplay = "Total Weight = " + totalWeight + " / " + maxWeight;
+
+
+
+
+
+    System.out.println(boatCargo);
+    System.out.println(boatStacks);
+    System.out.println(stackNum);
+    System.out.println(bottom);
+    System.out.println(dockCargo);
+    System.out.println(theDock);
+    System.out.println(weightDisplay);
+  }
+
+  public int dockSize(){
+    return dock.size();
+  }
+  public static void main(String[] args) {
+    CargoShip test = new CargoShip(8,1,3000);
+    Cargo testCargo = new Cargo("test12", 1, CargoStrength.MODERATE);
+    Cargo testCargo1 = new Cargo("test", 1, CargoStrength.FRAGILE);
+    Cargo testCargo2 = new Cargo("test1", 1, CargoStrength.MODERATE);
+    Cargo testCargo3 = new Cargo("test13", 1, CargoStrength.FRAGILE);
+
+    test.pushCargo(testCargo, -1);
+    test.pushCargo(testCargo1, -1);
+    test.pushCargo(testCargo2, -1);
+    test.pushCargo(testCargo3, -1);
+
+    /* F M F M
+
+    */
+    System.out.println(test.dockSize());
+  //  test.findAndPrint("test");
+  //  test.findAndPrint("test1");
+    test.printShip();
   }
 
 
