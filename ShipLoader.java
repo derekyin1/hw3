@@ -51,6 +51,7 @@ import java.util.Scanner;
                             try{
                               newShip.pushCargo(newCargo, -1);
                               System.out.println("Cargo " + name + " pushed onto the dock.");
+                              newShip.printShip();
                             }
                             catch (CargoStrengthException e){
                               System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
@@ -73,6 +74,7 @@ import java.util.Scanner;
                             try{
                               newShip.pushCargo(newCargo, -1);
                               System.out.println("Cargo " + name + " pushed onto the dock.");
+                              newShip.printShip();
                             }
                             catch (CargoStrengthException e){
                               System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
@@ -95,6 +97,7 @@ import java.util.Scanner;
                             try{
                               newShip.pushCargo(newCargo, -1);
                               System.out.println("Cargo " + name + " pushed onto the dock.");
+                              newShip.printShip();
                             }
                             catch (CargoStrengthException e){
                               System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
@@ -131,7 +134,42 @@ import java.util.Scanner;
                       }
                     }
                     if (s.equals("L") || s.equals("l")){
-
+                      System.out.println("Select the load destination stack index:");
+                      if (on.hasNextInt()){
+                        int index = on.nextInt();
+                        if (index != -1){
+                          try {
+                            Cargo toLoad = (Cargo) newShip.popCargo(-1);
+                            newShip.pushCargo(toLoad, index);
+                            newShip.printShip();
+                          }
+                          catch (CargoStrengthException e){
+                            System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (FullStackException e) {
+                            System.out.println("Operation failed! Cargo stack is at maximum height.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (ShipOverweightException e){
+                            System.out.println("Operation failed! Ship is at maximum capacity.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (EmptyStackException e){
+                            System.out.println("Operation failed! Dock is empty.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                        }
+                      }
+                      else{
+                        System.out.println("Invalid input.");
+                        isRunning = false;
+                        isRunning = true;
+                      }
                     }
                     if (s.equals("U") || s.equals("u")){
 
@@ -146,8 +184,9 @@ import java.util.Scanner;
 
                     }
                     if (s.equals("S") || s.equals("s")){
-
+                      newShip.printShip();
                     }
+
 
 
 
