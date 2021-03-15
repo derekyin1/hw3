@@ -24,7 +24,7 @@ public class CargoShip{
 
 
   @SuppressWarnings("unchecked")
-  public void pushCargo(Cargo cargo, int stack) /*throws FullStackException, ShipOverweightException, CargoStrengthException*/{
+  public void pushCargo(Cargo cargo, int stack) throws FullStackException, ShipOverweightException, CargoStrengthException{
     if (cargo != null && stack == -1){
       if (!dock.isEmpty()){
         if (cargo.getStrength().intStrength() <= ((Cargo) dock.peek()).getStrength().intStrength()){
@@ -32,7 +32,7 @@ public class CargoShip{
           return;
         }
         else {
-          //throw exception here
+          throw new CargoStrengthException("");
         }
       }
       else{
@@ -52,7 +52,7 @@ public class CargoShip{
               }
             }
             else{
-              //throw excpetion here
+              throw new CargoStrengthException("");
             }
           }
           else {
@@ -63,9 +63,13 @@ public class CargoShip{
             }
           }
         }
-        else{}
+        else{
+          throw new ShipOverweightException("");
+        }
       }
-      else{}
+      else{
+        throw new FullStackException("");
+      }
     }
     else throw new IllegalArgumentException();
   }
@@ -198,28 +202,6 @@ public class CargoShip{
     Cargo testCargo2 = new Cargo("test1", 1, CargoStrength.MODERATE);
     Cargo testCargo3 = new Cargo("test13", 1, CargoStrength.FRAGILE);
 
-    test.pushCargo(testCargo, 1);
-    test.pushCargo(testCargo, 1);
-    test.pushCargo(testCargo, 1);
-    test.pushCargo(testCargo, 1);
-    test.pushCargo(testCargo, 2);
-    test.pushCargo(testCargo, 2);
-    test.pushCargo(testCargo, 3);
-    test.pushCargo(testCargo, 3);
-    //test.pushCargo(testCargo, 4);
-    test.pushCargo(testCargo, 8);
-    test.pushCargo(testCargo, 6);
-    test.pushCargo(testCargo1, -1);
-    test.pushCargo(testCargo2, -1);
-    test.pushCargo(testCargo3, -1);
-
-    /* F M F M
-
-    */
-    System.out.println(test.dockSize());
-  //  test.findAndPrint("test");
-  //  test.findAndPrint("test1");
-    test.printShip();
   }
 
 
