@@ -1,3 +1,8 @@
+/** Derek Yin 113251504 Recitation Section 1
+*  This class defines a CargoShip on which Cargo objects are to be placed. Its specifications include number of stacks, maximum height, and maximum weight.
+*
+*  @author Derek Yin
+*/
 import java.util.Stack;
 public class CargoShip{
   private java.util.Stack[] stacks;
@@ -6,7 +11,16 @@ public class CargoShip{
   private int biggestHeight;
   private double maxWeight;
   private double totalWeight;
-
+/** This is a constructor that creates a new CargoShip with desired specifications
+* @param numStacks
+* desired total number of stacks of cargoship
+* @param initMaxHeight
+* desired initial maximum height of cargoship
+* @param initMaxWeight
+* desired initial max weight of cargoship.
+* @throws
+* IllegalArgumentException if any parameters are negative
+*/
   public CargoShip(int numStacks, int initMaxHeight, double initMaxWeight){
     if (numStacks > 0 && initMaxHeight > 0 && initMaxWeight > 0){
       stacks = new Stack[numStacks];
@@ -22,7 +36,19 @@ public class CargoShip{
     else throw new IllegalArgumentException();
   }
 
-
+/** This method attempts to push cargo from one stack to another.
+* @param cargo
+* desired cargo to be pushed
+* @param stack
+* desired stack to push cargo to
+*
+*@throws
+*throws FullStackException if desired stack is full
+*@throws
+*throws ShipOverweightException if Ship is over weight after adding.
+*@throws
+*throws CargoStrengthException if Cargo at top of desired stack is more fragile than the desired Cargo.
+*/
   @SuppressWarnings("unchecked")
   public void pushCargo(Cargo cargo, int stack) throws FullStackException, ShipOverweightException, CargoStrengthException{
     if (cargo != null && stack == -1){
@@ -72,15 +98,16 @@ public class CargoShip{
     else throw new IllegalArgumentException();
   }
 
-/*public Cargo popCargo(int stack) throws EmptyStackException{
-    if (stack >= 1 && stack <= stacks.length){
-      Cargo toReturn = (Cargo) stacks[stack-1].peek();
-      stacks[stack-1].pop();
-      return toReturn;
-    }
-    else throw new IllegalArgumentException();
-  }
-  */
+/** This method attempts to pop cargo from a desired stack.
+* @param stack
+* desired stack to pop cargo from.
+*
+* @return
+* returns popped cargo.
+*
+*@throws
+*throws EmptyStackException if desired stack is empty.
+*/
 
   public Cargo popCargo(int stack) throws EmptyStackException{
     if (stack == -1){
@@ -106,7 +133,16 @@ public class CargoShip{
     else throw new IllegalArgumentException();
 
   }
-
+/** This method attempts to access the top cargo from a desired stack.
+* @param stack
+* desired stack to peek top cargo from
+*
+* @return
+* returns accessed cargo.
+*
+*@throws
+*throws EmptyStackException if desired stack is empty.
+*/
   public Cargo peekCargo(int stack) throws EmptyStackException{
     if (stack == -1){
       if (!dock.isEmpty()){
@@ -127,7 +163,10 @@ public class CargoShip{
     else throw new IllegalArgumentException();
   }
 
-
+/** This method attempts to find and print all instances of Cargo with a certain name in a formatted table.
+* @param name
+* desired name of Cargo to find on the ship.
+*/
   public void findAndPrint(String name){
     java.util.Stack[] clone = new Stack[stacks.length];
     for (int i = 0; i < stacks.length; i++){
@@ -156,7 +195,9 @@ public class CargoShip{
       System.out.println("Cargo " + name + " could not be found on the ship.");
     }
   }
-
+/** This method prints the CargoShip, dock, and current and max weight in the Terminal.
+*
+*/
   public void printShip(){
     String boatStacks = "\\=";
     String stackNum = " \\";
@@ -232,45 +273,22 @@ public class CargoShip{
     System.out.println(theDock);
     System.out.println(weightDisplay);
   }
-
+/** This method returns size of dock
+*
+*@return
+*Returns size of dock
+*
+*/
   public int dockSize(){
     return dock.size();
   }
-
+/** This method clears dock.
+*
+*/
   public void clearDock(){
     while (!dock.isEmpty()){
       dock.pop();
     }
-  }
-  public static void main(String[] args) {
-    CargoShip test = new CargoShip(8,30,3000);
-    Cargo testCargo = new Cargo("test12", 1, CargoStrength.MODERATE);
-    Cargo testCargo1 = new Cargo("test", 1, CargoStrength.STURDY);
-    Cargo testCargo2 = new Cargo("test1", 1, CargoStrength.MODERATE);
-    Cargo testCargo3 = new Cargo("test13", 1, CargoStrength.FRAGILE);
-
-    try{
-      test.pushCargo(testCargo3, 1);
-      test.pushCargo(testCargo3, 2);
-      test.pushCargo(testCargo3, 1);
-      test.pushCargo(testCargo3, 1);
-    }
-    catch (FullStackException e) {
-      System.out.println("Operation failed! Cargo stack is at maximum height.");
-
-    }
-    catch (ShipOverweightException e){
-      System.out.println("Operation failed! Ship is at maximum capacity.");
-
-    }
-    catch (CargoStrengthException e){
-      System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
-    }
-    System.out.println(test.dockSize());
-    test.printShip();
-    System.out.println(test.dockSize());
-      test.printShip();
-
   }
 
 

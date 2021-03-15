@@ -1,8 +1,15 @@
+/** Derek Yin 113251504 Recitation Section 1
+*  This class runs a menu that allows a user to create a ship and move cargo to and from a ship and a dock.
+*
+*  @author Derek Yin
+*/
 import java.util.Scanner;
  public class ShipLoader{
 
 
-
+ /**This method runs the terminal menu and gives choices to the user.
+ *
+ */
 
   public static void main(String[] args) {
     boolean isRunning = false;
@@ -292,59 +299,6 @@ import java.util.Scanner;
                       String name = on.nextLine();
                       newShip.findAndPrint(name);
                     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                   }
                 }
                 else{
