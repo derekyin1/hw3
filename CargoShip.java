@@ -3,6 +3,7 @@ public class CargoShip{
   private java.util.Stack[] stacks;
   private java.util.Stack dock;
   private int maxHeight;
+  private int biggestHeight;
   private double maxWeight;
   private double totalWeight;
 
@@ -15,6 +16,7 @@ public class CargoShip{
       }
       maxHeight = initMaxHeight;
       maxWeight = initMaxWeight;
+      biggestHeight = 0;
       totalWeight = 0;
     }
     else throw new IllegalArgumentException();
@@ -24,22 +26,41 @@ public class CargoShip{
   @SuppressWarnings("unchecked")
   public void pushCargo(Cargo cargo, int stack) /*throws FullStackException, ShipOverweightException, CargoStrengthException*/{
     if (cargo != null && stack == -1){
-      dock.push(cargo);
-      return;
+      if (!dock.isEmpty()){
+        if (cargo.getStrength().intStrength() <= ((Cargo) dock.peek()).getStrength().intStrength()){
+          dock.push(cargo);
+          return;
+        }
+        else {
+          //throw exception here
+        }
+      }
+      else{
+        dock.push(cargo);
+        return;
+      }
     }
-    if (cargo != null && stack >= 1 && stack <= stacks.length){
+    else if (cargo != null && stack >= 1 && stack <= stacks.length){
       if (stacks[stack-1].size() < maxHeight){
         if (totalWeight + cargo.getWeight() <= maxWeight){
           if (!stacks[stack-1].isEmpty()){
             if (cargo.getStrength().intStrength() <= ((Cargo) stacks[stack-1].peek()).getStrength().intStrength()){
               stacks[stack-1].push(cargo);
               totalWeight += cargo.getWeight();
+              if (stacks[stack-1].size()+1 > biggestHeight){
+                biggestHeight = stacks[stack-1].size()+1;
+              }
             }
-            else{}
+            else{
+              //throw excpetion here
+            }
           }
           else {
             stacks[stack-1].push(cargo);
             totalWeight += cargo.getWeight();
+            if (stacks[stack-1].size()+1 > biggestHeight){
+              biggestHeight = stacks[stack-1].size()+1;
+            }
           }
         }
         else{}
@@ -95,7 +116,6 @@ public class CargoShip{
   }
 
   public void printShip(){
-    String boatCargo = "";
     String boatStacks = "\\=";
     String stackNum = " \\";
     String bottom = "  \\";
@@ -113,6 +133,29 @@ public class CargoShip{
     boatStacks+= "|=/";
     stackNum += "   /";
     bottom += "/";
+
+    String boatCargo = "     ";
+    java.util.Stack[] stackClone = stacks;
+    int height = biggestHeight;
+    while (height > 0){
+      for (int i = 0; i < stackClone.length; i++){
+        if (stackClone[i].size() == height){
+          if (((Cargo)stackClone[i].peek()).getStrength() == CargoStrength.FRAGILE){
+            boatCargo += "F     ";
+          }
+          else if (((Cargo)stackClone[i].peek()).getStrength() == CargoStrength.MODERATE){
+            boatCargo += "M     ";
+          }
+          else if (((Cargo)stackClone[i].peek()).getStrength() == CargoStrength.STURDY){
+            boatCargo += "S     ";
+          }
+          stackClone[i].pop();
+        }
+        else boatCargo += "      ";
+      }
+      height--;
+      boatCargo += "\n     ";
+    }
 
     String dockCargo = "";
     java.util.Stack dockClone = dock;
@@ -149,13 +192,23 @@ public class CargoShip{
     return dock.size();
   }
   public static void main(String[] args) {
-    CargoShip test = new CargoShip(8,1,3000);
+    CargoShip test = new CargoShip(8,30,3000);
     Cargo testCargo = new Cargo("test12", 1, CargoStrength.MODERATE);
-    Cargo testCargo1 = new Cargo("test", 1, CargoStrength.FRAGILE);
+    Cargo testCargo1 = new Cargo("test", 1, CargoStrength.STURDY);
     Cargo testCargo2 = new Cargo("test1", 1, CargoStrength.MODERATE);
     Cargo testCargo3 = new Cargo("test13", 1, CargoStrength.FRAGILE);
 
-    test.pushCargo(testCargo, -1);
+    test.pushCargo(testCargo, 1);
+    test.pushCargo(testCargo, 1);
+    test.pushCargo(testCargo, 1);
+    test.pushCargo(testCargo, 1);
+    test.pushCargo(testCargo, 2);
+    test.pushCargo(testCargo, 2);
+    test.pushCargo(testCargo, 3);
+    test.pushCargo(testCargo, 3);
+    //test.pushCargo(testCargo, 4);
+    test.pushCargo(testCargo, 8);
+    test.pushCargo(testCargo, 6);
     test.pushCargo(testCargo1, -1);
     test.pushCargo(testCargo2, -1);
     test.pushCargo(testCargo3, -1);
