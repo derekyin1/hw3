@@ -137,10 +137,12 @@ import java.util.Scanner;
                       System.out.println("Select the load destination stack index:");
                       if (on.hasNextInt()){
                         int index = on.nextInt();
-                        if (index != -1){
+                        if (index > 0){
                           try {
-                            Cargo toLoad = (Cargo) newShip.popCargo(-1);
-                            newShip.pushCargo(toLoad, index);
+                            Cargo toLoad = (Cargo) newShip.peekCargo(-1);
+                            newShip.pushCargo(toLoad, index); // must pop after operation finishes.
+                            newShip.popCargo(-1);
+                            System.out.println("Cargo " + toLoad.getName() + " moved from dock to stack " + index);
                             newShip.printShip();
                           }
                           catch (CargoStrengthException e){
@@ -172,19 +174,123 @@ import java.util.Scanner;
                       }
                     }
                     if (s.equals("U") || s.equals("u")){
-
+                      System.out.println("Select the unload source stack index:");
+                      if (on.hasNextInt()){
+                        int index = on.nextInt();
+                        if (index > 0){
+                          try {
+                            Cargo toLoad = (Cargo) newShip.peekCargo(index);//must pop after all exceptions are checekd for
+                            newShip.pushCargo(toLoad, -1);
+                            newShip.popCargo(index);
+                            System.out.println("Cargo moved from stack " + index + " to dock.");
+                            newShip.printShip();
+                          }
+                          catch (CargoStrengthException e){
+                            System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (FullStackException e) {
+                            System.out.println("Operation failed! Cargo stack is at maximum height.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (ShipOverweightException e){
+                            System.out.println("Operation failed! Ship is at maximum capacity.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                          catch (EmptyStackException e){
+                            System.out.println("Operation failed! Cargo stack is empty.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                        }
+                        else {
+                          System.out.println("Invalid input.");
+                          isRunning = false;
+                          isRunning = true;
+                        }
+                      }
+                      else{
+                        System.out.println("Invalid input.");
+                        isRunning = false;
+                        isRunning = true;
+                      }
                     }
                     if (s.equals("M") || s.equals("m")){
-
+                      System.out.println("Source stack index:");
+                      if (on.hasNextInt()){
+                        int srcIndex = on.nextInt();
+                        if (srcIndex > 0){
+                          System.out.println("Destination stack index:");
+                          if (on.hasNextInt()){
+                            int dstIndex = on.nextInt();
+                            if (dstIndex > 0){
+                              try{
+                                Cargo toLoad = (Cargo) newShip.peekCargo(srcIndex);
+                                newShip.pushCargo(toLoad, dstIndex);
+                                newShip.popCargo(srcIndex);
+                                System.out.println("Cargo moved from stack " + srcIndex + " to stack " + dstIndex);
+                                newShip.printShip();
+                              }
+                              catch (CargoStrengthException e){
+                                System.out.println("Operation failed! Cargo at top of stack cannot support weight.");
+                                isRunning = false;
+                                isRunning = true;
+                              }
+                              catch (FullStackException e) {
+                                System.out.println("Operation failed! Cargo stack is at maximum height.");
+                                isRunning = false;
+                                isRunning = true;
+                              }
+                              catch (ShipOverweightException e){
+                                System.out.println("Operation failed! Ship is at maximum capacity.");
+                                isRunning = false;
+                                isRunning = true;
+                              }
+                              catch (EmptyStackException e){
+                                System.out.println("Operation failed! Source stack is empty.");
+                                isRunning = false;
+                                isRunning = true;
+                              }
+                            }
+                            else {
+                              System.out.println("Invalid input.");
+                              isRunning = false;
+                              isRunning = true;
+                            }
+                          }
+                          else {
+                            System.out.println("Invalid input.");
+                            isRunning = false;
+                            isRunning = true;
+                          }
+                        }
+                        else {
+                          System.out.println("Invalid input.");
+                          isRunning = false;
+                          isRunning = true;
+                        }
+                      }
+                      else{
+                        System.out.println("Invalid input.");
+                        isRunning = false;
+                        isRunning = true;
+                      }
                     }
                     if (s.equals("K") || s.equals("k")){
-
+                      newShip.clearDock();
+                      System.out.println("Dock cleared.");
+                      newShip.printShip();
                     }
                     if (s.equals("P") || s.equals("p")){
-
+                      newShip.printShip();
                     }
                     if (s.equals("S") || s.equals("s")){
-                      newShip.printShip();
+                      System.out.println("Enter the name of the cargo:");
+                      String name = on.nextLine();
+                      newShip.findAndPrint(name);
                     }
 
 

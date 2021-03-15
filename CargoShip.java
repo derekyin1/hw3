@@ -107,25 +107,53 @@ public class CargoShip{
 
   }
 
+  public Cargo peekCargo(int stack) throws EmptyStackException{
+    if (stack == -1){
+      if (!dock.isEmpty()){
+        return (Cargo) dock.peek();
+      }
+      else{
+        throw new EmptyStackException("");
+      }
+    }
+    else if (stack >= 1 && stack <= stacks.length){
+      if (!stacks[stack-1].isEmpty()){
+        return (Cargo) stacks[stack-1].peek();
+      }
+      else{
+        throw new EmptyStackException("");
+      }
+    }
+    else throw new IllegalArgumentException();
+  }
+
 
   public void findAndPrint(String name){
-    java.util.Stack[] clone = (Stack[]) stacks.clone();
+    java.util.Stack[] clone = new Stack[stacks.length];
+    for (int i = 0; i < stacks.length; i++){
+      clone[i] = (Stack) stacks[i].clone();
+    }
+    boolean empty = true;
     System.out.printf("%-9s%-8s%-9s%1s", " Stack", "Depth", "Weight", "Strength");
     System.out.print("\n");
     System.out.println("=======+=======+========+==========");
     for (int i = 0; i < clone.length; i++){
+      int depth = 0;
       while (!clone[i].isEmpty()){
-        int depth = 0;
         if (((Cargo) clone[i].peek()).getName().equals(name)){
           System.out.printf("%-9s%-8d%-9s%1s", " " + (i+1), depth, ((Cargo) clone[i].peek()).getWeight(), ((Cargo) clone[i].peek()).getStrength().strengthToString());
           System.out.print("\n");
-          clone[i].pop();
+          empty = false;
+          depth++;
         }
         else {
           depth++;
-          clone[i].pop();
         }
+        clone[i].pop();
       }
+    }
+    if (empty){
+      System.out.println("Cargo " + name + " could not be found on the ship.");
     }
   }
 
@@ -207,6 +235,12 @@ public class CargoShip{
 
   public int dockSize(){
     return dock.size();
+  }
+
+  public void clearDock(){
+    while (!dock.isEmpty()){
+      dock.pop();
+    }
   }
   public static void main(String[] args) {
     CargoShip test = new CargoShip(8,30,3000);
